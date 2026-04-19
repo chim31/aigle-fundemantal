@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agile Training Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-deep: #0a0a0f;
+  --bg-card: #12121a;
+  --bg-card-hover: #1a1a26;
+  --surface: #1e1e2e;
+  --border: #2a2a3d;
+  --border-glow: #3b3b55;
+  --text-primary: #e8e6f0;
+  --text-secondary: #8b89a0;
+  --text-muted: #5a587a;
+  --accent-1: #6c5ce7;
+  --accent-1-glow: #8b7cf0;
+  --accent-2: #00cec9;
+  --accent-3: #fd79a8;
+  --accent-4: #fdcb6e;
+  --gradient-1: linear-gradient(135deg, #6c5ce7, #a29bfe);
+  --gradient-2: linear-gradient(135deg, #00cec9, #55efc4);
+  --gradient-3: linear-gradient(135deg, #fd79a8, #e17055);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  --shadow-glow: 0 0 40px rgba(108,92,231,0.15);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ═══════════ NOISE TEXTURE OVERLAY ═══════════ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ═══════════ SCROLLBAR ═══════════ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-1); }
+
+/* ═══════════ NAVIGATION ═══════════ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(10,10,15,0.85);
+  backdrop-filter: blur(20px) saturate(1.5);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  transition: all 0.3s;
+}
+.nav.scrolled { box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
+.nav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--text-primary);
+}
+.nav-logo-icon {
+  width: 38px; height: 38px;
+  background: var(--gradient-1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 18px;
+  color: white;
+  transform: rotate(-5deg);
+}
+.nav-logo-text {
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: -0.5px;
+}
+.nav-logo-text span { color: var(--accent-1); }
+.nav-links { display: flex; gap: 8px; align-items: center; }
+.nav-links a {
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.25s;
+}
+.nav-links a:hover { color: var(--text-primary); background: var(--surface); }
+.nav-links a.active { color: var(--accent-1); background: rgba(108,92,231,0.1); }
+
+.nav-progress {
+  position: absolute;
+  bottom: 0; left: 0;
+  height: 2px;
+  background: var(--gradient-1);
+  transition: width 0.3s;
+  border-radius: 0 2px 2px 0;
+}
+
+/* ═══════════ HERO ═══════════ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 120px 2rem 80px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(108,92,231,0.15), transparent 70%);
+  top: 10%; left: 50%;
+  transform: translateX(-50%);
+  animation: pulse-glow 6s ease-in-out infinite;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(0,206,201,0.1), transparent 70%);
+  bottom: 10%; right: 10%;
+  animation: pulse-glow 8s ease-in-out infinite reverse;
+}
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; transform: translateX(-50%) scale(1); }
+  50% { opacity: 1; transform: translateX(-50%) scale(1.2); }
+}
+
+.hero-content { position: relative; z-index: 2; max-width: 800px; }
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(108,92,231,0.12);
+  border: 1px solid rgba(108,92,231,0.25);
+  color: var(--accent-1-glow);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 8px 20px;
+  border-radius: 50px;
+  margin-bottom: 28px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  animation: fadeInUp 0.8s ease-out;
+}
+.hero-badge::before {
+  content: '';
+  width: 8px; height: 8px;
+  background: var(--accent-2);
+  border-radius: 50%;
+  animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.hero h1 {
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -2px;
+  margin-bottom: 24px;
+  animation: fadeInUp 0.8s ease-out 0.1s both;
+}
+.hero h1 .gradient-text {
+  background: var(--gradient-1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero p {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto 40px;
+  font-weight: 300;
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+.hero-cta {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeInUp 0.8s ease-out 0.3s both;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.btn-primary {
+  background: var(--gradient-1);
+  color: white;
+  box-shadow: 0 4px 20px rgba(108,92,231,0.35);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(108,92,231,0.5);
+}
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-glow);
+  transform: translateY(-2px);
+}
+
+/* ═══════════ STATS BAR ═══════════ */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  max-width: 700px;
+  margin: 60px auto 0;
+  animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+.stat-item {
+  background: var(--bg-card);
+  padding: 24px;
+  text-align: center;
+}
+.stat-number {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--accent-1-glow);
+}
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ═══════════ MODULES SECTION ═══════════ */
+.section {
+  padding: 100px 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.section-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+.section-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--accent-2);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 12px;
+}
+.section-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+/* ═══════════ MODULE CARDS ═══════════ */
+.modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 24px;
+}
+.module-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.25,0.8,0.25,1);
+  cursor: pointer;
+  position: relative;
+}
+.module-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--border-glow);
+  box-shadow: var(--shadow), var(--shadow-glow);
+}
+.module-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.module-card:nth-child(1)::before { background: var(--gradient-1); }
+.module-card:nth-child(2)::before { background: var(--gradient-2); }
+.module-card:nth-child(3)::before { background: var(--gradient-3); }
+
+.module-card-thumb {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  position: relative;
+}
+.module-card-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+.module-card:hover .module-card-thumb img { transform: scale(1.05); }
+.module-card-thumb .overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10,10,15,0.9) 0%, transparent 60%);
+}
+
+.module-card-body { padding: 28px; }
+.module-number {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+.module-card:nth-child(1) .module-number { color: var(--accent-1-glow); }
+.module-card:nth-child(2) .module-number { color: var(--accent-2); }
+.module-card:nth-child(3) .module-number { color: var(--accent-3); }
+
+.module-card-body h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+}
+.module-card-body p {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  margin-bottom: 20px;
+  font-weight: 300;
+}
+.module-meta {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.module-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+.module-meta-item svg { width: 16px; height: 16px; opacity: 0.6; }
+.module-start-btn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: white;
+}
+.module-card:nth-child(1) .module-start-btn { background: var(--gradient-1); }
+.module-card:nth-child(2) .module-start-btn { background: var(--gradient-2); color: #0a0a0f; }
+.module-card:nth-child(3) .module-start-btn { background: var(--gradient-3); }
+.module-start-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+
+/* ═══════════ VIEWER MODAL ═══════════ */
+.viewer-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  background: rgba(5,5,10,0.95);
+  backdrop-filter: blur(10px);
+  animation: fadeIn 0.3s;
+}
+.viewer-overlay.active { display: flex; flex-direction: column; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.viewer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: rgba(18,18,26,0.9);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.viewer-title { display: flex; align-items: center; gap: 12px; }
+.viewer-title h2 { font-size: 1.1rem; font-weight: 600; }
+.viewer-title .badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(108,92,231,0.15);
+  color: var(--accent-1-glow);
+}
+.viewer-close {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  font-size: 1.2rem;
+}
+.viewer-close:hover { background: var(--bg-card-hover); color: var(--text-primary); border-color: var(--accent-3); }
+
+.viewer-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 20px;
+  overflow: hidden;
+}
+.viewer-body img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  animation: slideIn 0.35s cubic-bezier(0.25,0.8,0.25,1);
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.viewer-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: rgba(18,18,26,0.9);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  transition: all 0.25s;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+}
+.viewer-nav-btn:hover { background: var(--accent-1); border-color: var(--accent-1); }
+.viewer-nav-btn.prev { left: 24px; }
+.viewer-nav-btn.next { right: 24px; }
+
+.viewer-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px 24px;
+  background: rgba(18,18,26,0.9);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.viewer-progress {
+  flex: 1;
+  max-width: 500px;
+  height: 4px;
+  background: var(--surface);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.viewer-progress-bar {
+  height: 100%;
+  background: var(--gradient-1);
+  border-radius: 2px;
+  transition: width 0.35s ease;
+}
+.viewer-counter {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  min-width: 70px;
+  text-align: center;
+}
+
+/* ═══════════ THUMBNAIL STRIP ═══════════ */
+.viewer-thumbstrip {
+  display: flex;
+  gap: 8px;
+  padding: 12px 24px;
+  background: rgba(12,12,18,0.95);
+  border-top: 1px solid var(--border);
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+.viewer-thumbstrip::-webkit-scrollbar { height: 4px; }
+.viewer-thumbstrip::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.thumb-item {
+  width: 64px; height: 44px;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  opacity: 0.5;
+}
+.thumb-item:hover { opacity: 0.8; }
+.thumb-item.active { border-color: var(--accent-1); opacity: 1; }
+.thumb-item img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ═══════════ FOOTER ═══════════ */
+.site-footer {
+  padding: 60px 2rem 30px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+.footer-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.footer-brand .nav-logo-icon {
+  width: 30px; height: 30px;
+  font-size: 14px;
+}
+.footer-brand span {
+  font-weight: 600;
+  font-size: 1rem;
+}
+.site-footer p {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* ═══════════ MOBILE ═══════════ */
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .modules-grid { grid-template-columns: 1fr; }
+  .hero { padding: 100px 1.5rem 60px; }
+  .stats-bar { grid-template-columns: repeat(3, 1fr); }
+  .viewer-nav-btn { width: 40px; height: 40px; font-size: 1.1rem; }
+  .viewer-nav-btn.prev { left: 8px; }
+  .viewer-nav-btn.next { right: 8px; }
+  .section { padding: 60px 1.5rem; }
+}
+
+/* ═══════════ FLOATING GRID PATTERN ═══════════ */
+.grid-pattern {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(108,92,231,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(108,92,231,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ NAVIGATION ═══════════ -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo" onclick="showHome()">
+      <div class="nav-logo-icon">A</div>
+      <div class="nav-logo-text">Agile<span>Training</span></div>
+    </a>
+    <div class="nav-links">
+      <a href="#modules" class="active" data-nav="modules">Modules</a>
+      <a href="#" onclick="openModule(0)" data-nav="m1">Module 1</a>
+      <a href="#" onclick="openModule(1)" data-nav="m2">Module 2</a>
+      <a href="#" onclick="openModule(2)" data-nav="m3">Module 3</a>
+    </div>
+  </div>
+  <div class="nav-progress" id="navProgress" style="width: 0%"></div>
+</nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero" id="hero">
+  <div class="grid-pattern"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      Formation Agile 2026
+    </div>
+    <h1>
+      Maîtrisez l'<span class="gradient-text">Agilité</span><br>
+      en 3 Modules
+    </h1>
+    <p>
+      Découvrez les fondamentaux de l'Agile, de la gestion opérationnelle
+      aux programmes à grande échelle. Une formation complète et visuelle.
+    </p>
+    <div class="hero-cta">
+      <a href="#modules" class="btn btn-primary">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Commencer la formation
+      </a>
+      <a href="#modules" class="btn btn-secondary">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Voir les modules
+      </a>
+    </div>
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-number">3</div>
+        <div class="stat-label">Modules</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">72</div>
+        <div class="stat-label">Slides</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Visuel</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ MODULES ═══════════ -->
+<section class="section" id="modules">
+  <div class="section-header">
+    <div class="section-label">Programme de formation</div>
+    <h2 class="section-title">Choisissez votre Module</h2>
+  </div>
+
+  <div class="modules-grid">
+    <!-- Module 1 -->
+    <div class="module-card" onclick="openModule(0)">
+      <div class="module-card-thumb">
+        <img src="images/module1/slide_01.png" alt="Module 1 Preview" loading="lazy">
+        <div class="overlay"></div>
+      </div>
+      <div class="module-card-body">
+        <div class="module-number">Module 01</div>
+        <h3>A Taste of Agile</h3>
+        <p>Introduction aux concepts fondamentaux de l'Agilité. Découvrez les principes, valeurs et frameworks qui transforment la gestion de projet.</p>
+        <div class="module-meta">
+          <div class="module-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            28 slides
+          </div>
+          <div class="module-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            ~45 min
+          </div>
+          <div class="module-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            Débutant
+          </div>
+        </div>
+        <button class="module-start-btn">Commencer le Module →</button>
+      </div>
+    </div>
+
+    <!-- Module 2 -->
+    <div class="module-card" onclick="openModule(1)">
+      <div class="module-card-thumb">
+        <img src="images/module2/slide_01.png" alt="Module 2 Preview" loading="lazy">
+        <div class="overlay"></div>
+      </div>
+      <div class="module-card-body">
+        <div class="module-number">Module 02</div>
+        <h3>Agile Operations Fundamentals</h3>
+        <p>Plongez dans les opérations Agile au quotidien. Sprints, stand-ups, rétrospectives — tout ce qu'il faut pour opérer en mode Agile.</p>
+        <div class="module-meta">
+          <div class="module-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            29 slides
+          </div>
+          <div class="module-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            ~50 min
+          </div>
+          <div class="module-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            Intermédiaire
+          </div>
+        </div>
+        <button class="module-start-btn">Commencer le Module →</button>
+      </div>
+    </div>
+
+    <!-- Module 3 -->
+    <div class="module-card" onclick="openModule(2)">
+      <div class="module-card-thumb">
+        <img src="images/module3/slide_01.jpeg" alt="Module 3 Preview" loading="lazy">
+        <div class="overlay"></div>
+      </div>
+      <div class="module-card-body">
+        <div class="module-number">Module 03</div>
+        <h3>Agile Program Fundamentals</h3>
+        <p>Scalez l'Agilité au niveau programme. Coordination multi-équipes, PI Planning, et gouvernance Agile à l'échelle de l'entreprise.</p>
+        <div class="module-meta">
+          <div class="module-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            15 slides
+          </div>
+          <div class="module-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            ~30 min
+          </div>
+          <div class="module-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            Avancé
+          </div>
+        </div>
+        <button class="module-start-btn">Commencer le Module →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="site-footer">
+  <div class="footer-brand">
+    <div class="nav-logo-icon">A</div>
+    <span>AgileTraining Platform</span>
+  </div>
+  <p>Formation Agile — Tous droits réservés © 2026</p>
+</footer>
+
+<!-- ═══════════ VIEWER OVERLAY ═══════════ -->
+<div class="viewer-overlay" id="viewer">
+  <div class="viewer-header">
+    <div class="viewer-title">
+      <h2 id="viewerTitle">Module</h2>
+      <div class="badge" id="viewerBadge">1 / 28</div>
+    </div>
+    <button class="viewer-close" onclick="closeViewer()">✕</button>
+  </div>
+  <div class="viewer-body" id="viewerBody">
+    <button class="viewer-nav-btn prev" onclick="prevSlide()">‹</button>
+    <img id="viewerImg" src="" alt="Slide">
+    <button class="viewer-nav-btn next" onclick="nextSlide()">›</button>
+  </div>
+  <div class="viewer-thumbstrip" id="thumbstrip"></div>
+  <div class="viewer-footer">
+    <div class="viewer-counter" id="viewerCounter">1 / 28</div>
+    <div class="viewer-progress">
+      <div class="viewer-progress-bar" id="viewerProgressBar"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════ DATA ═══════════
+const modules = [
+  {
+    title: "A Taste of Agile",
+    count: 28,
+    ext: "png",
+    folder: "images/module1"
+  },
+  {
+    title: "Agile Operations Fundamentals",
+    count: 29,
+    ext: "png",
+    folder: "images/module2"
+  },
+  {
+    title: "Agile Program Fundamentals",
+    count: 15,
+    ext: "jpeg",
+    folder: "images/module3"
+  }
+];
+
+let currentModule = 0;
+let currentSlide = 0;
+
+// ═══════════ NAV SCROLL ═══════════
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('nav');
+  nav.classList.toggle('scrolled', window.scrollY > 50);
+
+  // Progress
+  const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0;
+  document.getElementById('navProgress').style.width = progress + '%';
+});
+
+// ═══════════ VIEWER ═══════════
+function getSlideUrl(moduleIdx, slideIdx) {
+  const m = modules[moduleIdx];
+  const num = String(slideIdx + 1).padStart(2, '0');
+  return `${m.folder}/slide_${num}.${m.ext}`;
+}
+
+function openModule(idx) {
+  currentModule = idx;
+  currentSlide = 0;
+  const m = modules[idx];
+  const viewer = document.getElementById('viewer');
+
+  document.getElementById('viewerTitle').textContent = m.title;
+  updateSlide();
+  buildThumbs();
+
+  viewer.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeViewer() {
+  document.getElementById('viewer').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function updateSlide() {
+  const m = modules[currentModule];
+  const img = document.getElementById('viewerImg');
+
+  // Animate transition
+  img.style.opacity = '0';
+  img.style.transform = 'scale(0.97)';
+
+  setTimeout(() => {
+    img.src = getSlideUrl(currentModule, currentSlide);
+    img.style.opacity = '1';
+    img.style.transform = 'scale(1)';
+  }, 150);
+
+  const label = `${currentSlide + 1} / ${m.count}`;
+  document.getElementById('viewerBadge').textContent = label;
+  document.getElementById('viewerCounter').textContent = label;
+  document.getElementById('viewerProgressBar').style.width =
+    ((currentSlide + 1) / m.count * 100) + '%';
+
+  // Update thumb active
+  document.querySelectorAll('.thumb-item').forEach((t, i) => {
+    t.classList.toggle('active', i === currentSlide);
+  });
+
+  // Scroll active thumb into view
+  const activeThumb = document.querySelector('.thumb-item.active');
+  if (activeThumb) activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+}
+
+function buildThumbs() {
+  const strip = document.getElementById('thumbstrip');
+  const m = modules[currentModule];
+  strip.innerHTML = '';
+  for (let i = 0; i < m.count; i++) {
+    const div = document.createElement('div');
+    div.className = 'thumb-item' + (i === 0 ? ' active' : '');
+    div.innerHTML = `<img src="${getSlideUrl(currentModule, i)}" alt="Slide ${i+1}" loading="lazy">`;
+    div.onclick = () => { currentSlide = i; updateSlide(); };
+    strip.appendChild(div);
+  }
+}
+
+function nextSlide() {
+  const m = modules[currentModule];
+  currentSlide = (currentSlide + 1) % m.count;
+  updateSlide();
+}
+
+function prevSlide() {
+  const m = modules[currentModule];
+  currentSlide = (currentSlide - 1 + m.count) % m.count;
+  updateSlide();
+}
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('viewer').classList.contains('active')) return;
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+  if (e.key === 'ArrowLeft') prevSlide();
+  if (e.key === 'Escape') closeViewer();
+});
+
+// Touch swipe
+let touchStartX = 0;
+document.getElementById('viewerBody').addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+});
+document.getElementById('viewerBody').addEventListener('touchend', e => {
+  const diff = touchStartX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 50) {
+    diff > 0 ? nextSlide() : prevSlide();
+  }
+});
+
+function showHome() {
+  closeViewer();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Smooth image transition
+const viewerImg = document.getElementById('viewerImg');
+viewerImg.style.transition = 'opacity 0.2s, transform 0.25s';
+</script>
+
+</body>
+</html>
