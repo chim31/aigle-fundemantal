@@ -3,955 +3,344 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agile Training Platform</title>
+<title>Agile Training Platform — Quiz Interactif</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a26;--sf:#1e1e2e;--bd:#2a2a3d;--bd2:#3b3b55;--t1:#e8e6f0;--t2:#8b89a0;--t3:#5a587a;--a1:#6c5ce7;--a1g:#8b7cf0;--a2:#00cec9;--a3:#fd79a8;--g1:linear-gradient(135deg,#6c5ce7,#a29bfe);--g2:linear-gradient(135deg,#00cec9,#55efc4);--g3:linear-gradient(135deg,#fd79a8,#e17055);--r:16px;--rs:10px}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:var(--a1)}
 
-:root {
-  --bg-deep: #0a0a0f;
-  --bg-card: #12121a;
-  --bg-card-hover: #1a1a26;
-  --surface: #1e1e2e;
-  --border: #2a2a3d;
-  --border-glow: #3b3b55;
-  --text-primary: #e8e6f0;
-  --text-secondary: #8b89a0;
-  --text-muted: #5a587a;
-  --accent-1: #6c5ce7;
-  --accent-1-glow: #8b7cf0;
-  --accent-2: #00cec9;
-  --accent-3: #fd79a8;
-  --accent-4: #fdcb6e;
-  --gradient-1: linear-gradient(135deg, #6c5ce7, #a29bfe);
-  --gradient-2: linear-gradient(135deg, #00cec9, #55efc4);
-  --gradient-3: linear-gradient(135deg, #fd79a8, #e17055);
-  --radius: 16px;
-  --radius-sm: 10px;
-  --shadow: 0 8px 32px rgba(0,0,0,0.4);
-  --shadow-glow: 0 0 40px rgba(108,92,231,0.15);
-}
+/* ═══ NAV ═══ */
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(10,10,15,.85);backdrop-filter:blur(20px) saturate(1.5);border-bottom:1px solid var(--bd);padding:0 2rem}
+.nav-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:70px}
+.nav-logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--t1);cursor:pointer}
+.nav-logo-icon{width:38px;height:38px;background:var(--g1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#fff;transform:rotate(-5deg)}
+.nav-logo-text{font-weight:700;font-size:1.2rem;letter-spacing:-.5px}.nav-logo-text span{color:var(--a1)}
+.nav-links{display:flex;gap:6px;align-items:center}
+.nav-links a{text-decoration:none;color:var(--t2);font-size:.88rem;font-weight:500;padding:8px 14px;border-radius:8px;transition:.25s;cursor:pointer}
+.nav-links a:hover{color:var(--t1);background:var(--sf)}.nav-links a.active{color:var(--a1);background:rgba(108,92,231,.1)}
 
-html { scroll-behavior: smooth; }
+/* ═══ HERO ═══ */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 2rem 80px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(108,92,231,.15),transparent 70%);top:10%;left:50%;transform:translateX(-50%);animation:pg 6s ease-in-out infinite}
+.hero::after{content:'';position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(0,206,201,.1),transparent 70%);bottom:10%;right:10%;animation:pg 8s ease-in-out infinite reverse}
+@keyframes pg{0%,100%{opacity:.5;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.2)}}
+.hero-content{position:relative;z-index:2;max-width:800px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(108,92,231,.12);border:1px solid rgba(108,92,231,.25);color:var(--a1g);font-size:.85rem;font-weight:600;padding:8px 20px;border-radius:50px;margin-bottom:28px;letter-spacing:1px;text-transform:uppercase;animation:fiu .8s ease-out}
+.hero-badge::before{content:'';width:8px;height:8px;background:var(--a2);border-radius:50%;animation:bk 2s ease-in-out infinite}
+@keyframes bk{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-size:clamp(2.8rem,6vw,5rem);font-weight:900;line-height:1.05;letter-spacing:-2px;margin-bottom:24px;animation:fiu .8s ease-out .1s both}
+.hero h1 .gt{background:var(--g1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:1.15rem;color:var(--t2);max-width:620px;margin:0 auto 40px;font-weight:300;animation:fiu .8s ease-out .2s both}
+.hero-cta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;animation:fiu .8s ease-out .3s both}
+@keyframes fiu{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:14px 32px;border-radius:12px;font-family:'Outfit',sans-serif;font-weight:600;font-size:1rem;text-decoration:none;border:none;cursor:pointer;transition:.3s}
+.btn-p{background:var(--g1);color:#fff;box-shadow:0 4px 20px rgba(108,92,231,.35)}.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(108,92,231,.5)}
+.btn-s{background:var(--sf);color:var(--t1);border:1px solid var(--bd)}.btn-s:hover{background:var(--bg3);border-color:var(--bd2);transform:translateY(-2px)}
+.stats-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border-radius:var(--r);overflow:hidden;max-width:600px;margin:60px auto 0;animation:fiu .8s ease-out .4s both}
+.stat-item{background:var(--bg2);padding:24px;text-align:center}
+.stat-number{font-family:'Space Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--a1g)}
+.stat-label{font-size:.8rem;color:var(--t3);margin-top:4px;text-transform:uppercase;letter-spacing:1px}
 
-body {
-  font-family: 'Outfit', sans-serif;
-  background: var(--bg-deep);
-  color: var(--text-primary);
-  line-height: 1.6;
-  overflow-x: hidden;
-}
+/* ═══ MODULES ═══ */
+.section{padding:100px 2rem;max-width:1400px;margin:0 auto}
+.section-header{text-align:center;margin-bottom:60px}
+.section-label{font-family:'Space Mono',monospace;font-size:.8rem;color:var(--a2);text-transform:uppercase;letter-spacing:3px;margin-bottom:12px}
+.section-title{font-size:clamp(2rem,4vw,3rem);font-weight:800;letter-spacing:-1px}
+.modules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:24px}
+.mc{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;transition:.4s cubic-bezier(.25,.8,.25,1);cursor:pointer;position:relative}
+.mc:hover{transform:translateY(-6px);border-color:var(--bd2);box-shadow:0 8px 32px rgba(0,0,0,.4),0 0 40px rgba(108,92,231,.15)}
+.mc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r) var(--r) 0 0}
+.mc:nth-child(1)::before{background:var(--g1)}.mc:nth-child(2)::before{background:var(--g2)}.mc:nth-child(3)::before{background:var(--g3)}
+.mc-body{padding:28px}
+.mc-num{font-family:'Space Mono',monospace;font-size:.75rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}
+.mc:nth-child(1) .mc-num{color:var(--a1g)}.mc:nth-child(2) .mc-num{color:var(--a2)}.mc:nth-child(3) .mc-num{color:var(--a3)}
+.mc-body h3{font-size:1.35rem;font-weight:700;margin-bottom:10px;letter-spacing:-.5px}
+.mc-body p{color:var(--t2);font-size:.9rem;margin-bottom:20px;font-weight:300}
+.mc-meta{display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:.82rem;color:var(--t3)}
+.mc-btn{margin-top:20px;width:100%;padding:13px;border-radius:var(--rs);font-family:'Outfit',sans-serif;font-weight:600;font-size:.95rem;border:none;cursor:pointer;transition:.3s;color:#fff}
+.mc:nth-child(1) .mc-btn{background:var(--g1)}.mc:nth-child(2) .mc-btn{background:var(--g2);color:#0a0a0f}.mc:nth-child(3) .mc-btn{background:var(--g3)}
+.mc-btn:hover{transform:translateY(-2px);opacity:.9}
 
-/* ═══════════ NOISE TEXTURE OVERLAY ═══════════ */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 9999;
-}
+/* ═══ FOOTER ═══ */
+.site-footer{padding:60px 2rem 30px;border-top:1px solid var(--bd);text-align:center}
+.site-footer p{color:var(--t3);font-size:.85rem;margin-top:12px}
 
-/* ═══════════ SCROLLBAR ═══════════ */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-deep); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--accent-1); }
+/* ═══ QUIZ OVERLAY ═══ */
+.quiz-overlay{display:none;position:fixed;inset:0;z-index:5000;background:var(--bg);overflow-y:auto}
+.quiz-overlay.active{display:block}
+.quiz-top{position:sticky;top:0;z-index:10;background:rgba(10,10,15,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
+.quiz-top-left{display:flex;align-items:center;gap:12px}
+.quiz-top h2{font-size:1.05rem;font-weight:600}
+.qbadge{font-family:'Space Mono',monospace;font-size:.72rem;padding:4px 12px;border-radius:6px;background:rgba(108,92,231,.15);color:var(--a1g)}
+.quiz-close{width:40px;height:40px;border-radius:10px;border:1px solid var(--bd);background:var(--sf);color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;transition:.2s}
+.quiz-close:hover{background:var(--bg3);color:var(--t1);border-color:var(--a3)}
+.quiz-pbar{height:4px;background:var(--sf);position:sticky;top:73px;z-index:10}
+.quiz-pfill{height:100%;background:var(--g1);transition:width .4s ease;border-radius:0 2px 2px 0}
+.quiz-container{max-width:740px;margin:0 auto;padding:40px 24px 120px}
 
-/* ═══════════ NAVIGATION ═══════════ */
-.nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 1000;
-  background: rgba(10,10,15,0.85);
-  backdrop-filter: blur(20px) saturate(1.5);
-  border-bottom: 1px solid var(--border);
-  padding: 0 2rem;
-  transition: all 0.3s;
-}
-.nav.scrolled { box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
-.nav-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 70px;
-}
-.nav-logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  text-decoration: none;
-  color: var(--text-primary);
-}
-.nav-logo-icon {
-  width: 38px; height: 38px;
-  background: var(--gradient-1);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 900;
-  font-size: 18px;
-  color: white;
-  transform: rotate(-5deg);
-}
-.nav-logo-text {
-  font-weight: 700;
-  font-size: 1.2rem;
-  letter-spacing: -0.5px;
-}
-.nav-logo-text span { color: var(--accent-1); }
-.nav-links { display: flex; gap: 8px; align-items: center; }
-.nav-links a {
-  text-decoration: none;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  font-weight: 500;
-  padding: 8px 16px;
-  border-radius: 8px;
-  transition: all 0.25s;
-}
-.nav-links a:hover { color: var(--text-primary); background: var(--surface); }
-.nav-links a.active { color: var(--accent-1); background: rgba(108,92,231,0.1); }
+/* ═══ QUESTION CARDS ═══ */
+.q-card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:32px;margin-bottom:20px;transition:.3s}
+.q-card.answered-correct{border-color:rgba(0,206,201,.35)}
+.q-card.answered-wrong{border-color:rgba(253,121,168,.35)}
+.q-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.q-number{font-family:'Space Mono',monospace;font-size:.78rem;color:var(--a1g);letter-spacing:1px}
+.q-status{font-size:.75rem;font-weight:600;padding:4px 12px;border-radius:6px;display:none}
+.q-status.correct{display:inline-block;background:rgba(0,206,201,.12);color:var(--a2)}
+.q-status.wrong{display:inline-block;background:rgba(253,121,168,.12);color:var(--a3)}
+.q-context{font-size:.92rem;color:var(--t2);margin-bottom:12px;line-height:1.7;font-weight:300;padding:16px;background:rgba(108,92,231,.04);border-radius:var(--rs);border-left:3px solid rgba(108,92,231,.2)}
+.q-text{font-size:1.02rem;font-weight:600;margin-bottom:20px;line-height:1.55}
+.q-options{display:flex;flex-direction:column;gap:10px}
+.q-opt{display:flex;align-items:flex-start;gap:14px;padding:14px 18px;border-radius:var(--rs);border:1px solid var(--bd);cursor:pointer;transition:.25s;font-size:.93rem;line-height:1.5}
+.q-opt:hover:not(.disabled){border-color:var(--bd2);background:var(--bg3)}
+.q-opt .dot{width:22px;height:22px;min-width:22px;border-radius:50%;border:2px solid var(--bd2);display:flex;align-items:center;justify-content:center;transition:.25s;font-size:11px;color:transparent;margin-top:1px}
+.q-opt.selected .dot{border-color:var(--a1);background:var(--a1);color:#fff}
+.q-opt.is-correct .dot{border-color:var(--a2);background:var(--a2);color:#fff}
+.q-opt.is-wrong .dot{border-color:var(--a3);background:var(--a3);color:#fff}
+.q-opt.is-correct{border-color:rgba(0,206,201,.35);background:rgba(0,206,201,.05)}
+.q-opt.is-wrong{border-color:rgba(253,121,168,.35);background:rgba(253,121,168,.05)}
+.q-opt.disabled{cursor:default;opacity:.6}.q-opt.is-correct.disabled{opacity:1}.q-opt.is-wrong.disabled{opacity:1}
 
-.nav-progress {
-  position: absolute;
-  bottom: 0; left: 0;
-  height: 2px;
-  background: var(--gradient-1);
-  transition: width 0.3s;
-  border-radius: 0 2px 2px 0;
-}
+/* ═══ RESULTS ═══ */
+.quiz-results{text-align:center;padding:60px 24px;background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r)}
+.quiz-results h2{font-size:2rem;font-weight:800;margin-bottom:8px}
+.quiz-results .score{font-family:'Space Mono',monospace;font-size:3.5rem;font-weight:700;margin:20px 0}
+.quiz-results .score.great{color:var(--a2)}.quiz-results .score.ok{color:var(--a1g)}.quiz-results .score.bad{color:var(--a3)}
+.quiz-results p{color:var(--t2);font-size:1.1rem;margin-bottom:30px}
+.quiz-results .btn{margin:8px}
 
-/* ═══════════ HERO ═══════════ */
-.hero {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 120px 2rem 80px;
-  position: relative;
-  overflow: hidden;
-}
-.hero::before {
-  content: '';
-  position: absolute;
-  width: 600px; height: 600px;
-  background: radial-gradient(circle, rgba(108,92,231,0.15), transparent 70%);
-  top: 10%; left: 50%;
-  transform: translateX(-50%);
-  animation: pulse-glow 6s ease-in-out infinite;
-}
-.hero::after {
-  content: '';
-  position: absolute;
-  width: 400px; height: 400px;
-  background: radial-gradient(circle, rgba(0,206,201,0.1), transparent 70%);
-  bottom: 10%; right: 10%;
-  animation: pulse-glow 8s ease-in-out infinite reverse;
-}
-@keyframes pulse-glow {
-  0%, 100% { opacity: 0.5; transform: translateX(-50%) scale(1); }
-  50% { opacity: 1; transform: translateX(-50%) scale(1.2); }
-}
+.grid-pattern{position:absolute;inset:0;background-image:linear-gradient(rgba(108,92,231,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(108,92,231,.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
 
-.hero-content { position: relative; z-index: 2; max-width: 800px; }
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(108,92,231,0.12);
-  border: 1px solid rgba(108,92,231,0.25);
-  color: var(--accent-1-glow);
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 8px 20px;
-  border-radius: 50px;
-  margin-bottom: 28px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  animation: fadeInUp 0.8s ease-out;
-}
-.hero-badge::before {
-  content: '';
-  width: 8px; height: 8px;
-  background: var(--accent-2);
-  border-radius: 50%;
-  animation: blink 2s ease-in-out infinite;
-}
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
-}
-
-.hero h1 {
-  font-size: clamp(2.8rem, 6vw, 5rem);
-  font-weight: 900;
-  line-height: 1.05;
-  letter-spacing: -2px;
-  margin-bottom: 24px;
-  animation: fadeInUp 0.8s ease-out 0.1s both;
-}
-.hero h1 .gradient-text {
-  background: var(--gradient-1);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.hero p {
-  font-size: 1.2rem;
-  color: var(--text-secondary);
-  max-width: 600px;
-  margin: 0 auto 40px;
-  font-weight: 300;
-  animation: fadeInUp 0.8s ease-out 0.2s both;
-}
-.hero-cta {
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-  flex-wrap: wrap;
-  animation: fadeInUp 0.8s ease-out 0.3s both;
-}
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 32px;
-  border-radius: 12px;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 600;
-  font-size: 1rem;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-.btn-primary {
-  background: var(--gradient-1);
-  color: white;
-  box-shadow: 0 4px 20px rgba(108,92,231,0.35);
-}
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(108,92,231,0.5);
-}
-.btn-secondary {
-  background: var(--surface);
-  color: var(--text-primary);
-  border: 1px solid var(--border);
-}
-.btn-secondary:hover {
-  background: var(--bg-card-hover);
-  border-color: var(--border-glow);
-  transform: translateY(-2px);
-}
-
-/* ═══════════ STATS BAR ═══════════ */
-.stats-bar {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1px;
-  background: var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  max-width: 700px;
-  margin: 60px auto 0;
-  animation: fadeInUp 0.8s ease-out 0.4s both;
-}
-.stat-item {
-  background: var(--bg-card);
-  padding: 24px;
-  text-align: center;
-}
-.stat-number {
-  font-family: 'Space Mono', monospace;
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--accent-1-glow);
-}
-.stat-label {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  margin-top: 4px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-/* ═══════════ MODULES SECTION ═══════════ */
-.section {
-  padding: 100px 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-.section-header {
-  text-align: center;
-  margin-bottom: 60px;
-}
-.section-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.8rem;
-  color: var(--accent-2);
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  margin-bottom: 12px;
-}
-.section-title {
-  font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 800;
-  letter-spacing: -1px;
-}
-
-/* ═══════════ MODULE CARDS ═══════════ */
-.modules-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-  gap: 24px;
-}
-.module-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.25,0.8,0.25,1);
-  cursor: pointer;
-  position: relative;
-}
-.module-card:hover {
-  transform: translateY(-6px);
-  border-color: var(--border-glow);
-  box-shadow: var(--shadow), var(--shadow-glow);
-}
-.module-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  border-radius: var(--radius) var(--radius) 0 0;
-}
-.module-card:nth-child(1)::before { background: var(--gradient-1); }
-.module-card:nth-child(2)::before { background: var(--gradient-2); }
-.module-card:nth-child(3)::before { background: var(--gradient-3); }
-
-.module-card-thumb {
-  width: 100%;
-  height: 200px;
-  overflow: hidden;
-  position: relative;
-}
-.module-card-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s;
-}
-.module-card:hover .module-card-thumb img { transform: scale(1.05); }
-.module-card-thumb .overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(10,10,15,0.9) 0%, transparent 60%);
-}
-
-.module-card-body { padding: 28px; }
-.module-number {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 10px;
-}
-.module-card:nth-child(1) .module-number { color: var(--accent-1-glow); }
-.module-card:nth-child(2) .module-number { color: var(--accent-2); }
-.module-card:nth-child(3) .module-number { color: var(--accent-3); }
-
-.module-card-body h3 {
-  font-size: 1.4rem;
-  font-weight: 700;
-  margin-bottom: 10px;
-  letter-spacing: -0.5px;
-}
-.module-card-body p {
-  color: var(--text-secondary);
-  font-size: 0.92rem;
-  margin-bottom: 20px;
-  font-weight: 300;
-}
-.module-meta {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.module-meta-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.82rem;
-  color: var(--text-muted);
-}
-.module-meta-item svg { width: 16px; height: 16px; opacity: 0.6; }
-.module-start-btn {
-  margin-top: 20px;
-  width: 100%;
-  padding: 12px;
-  border-radius: var(--radius-sm);
-  font-family: 'Outfit', sans-serif;
-  font-weight: 600;
-  font-size: 0.95rem;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s;
-  color: white;
-}
-.module-card:nth-child(1) .module-start-btn { background: var(--gradient-1); }
-.module-card:nth-child(2) .module-start-btn { background: var(--gradient-2); color: #0a0a0f; }
-.module-card:nth-child(3) .module-start-btn { background: var(--gradient-3); }
-.module-start-btn:hover { transform: translateY(-2px); opacity: 0.9; }
-
-/* ═══════════ VIEWER MODAL ═══════════ */
-.viewer-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 5000;
-  background: rgba(5,5,10,0.95);
-  backdrop-filter: blur(10px);
-  animation: fadeIn 0.3s;
-}
-.viewer-overlay.active { display: flex; flex-direction: column; }
-
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-.viewer-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 24px;
-  background: rgba(18,18,26,0.9);
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-}
-.viewer-title { display: flex; align-items: center; gap: 12px; }
-.viewer-title h2 { font-size: 1.1rem; font-weight: 600; }
-.viewer-title .badge {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  padding: 4px 10px;
-  border-radius: 6px;
-  background: rgba(108,92,231,0.15);
-  color: var(--accent-1-glow);
-}
-.viewer-close {
-  width: 40px; height: 40px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text-secondary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-  font-size: 1.2rem;
-}
-.viewer-close:hover { background: var(--bg-card-hover); color: var(--text-primary); border-color: var(--accent-3); }
-
-.viewer-body {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  padding: 20px;
-  overflow: hidden;
-}
-.viewer-body img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  border-radius: var(--radius-sm);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-  animation: slideIn 0.35s cubic-bezier(0.25,0.8,0.25,1);
-}
-@keyframes slideIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-.viewer-nav-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 52px; height: 52px;
-  border-radius: 50%;
-  border: 1px solid var(--border);
-  background: rgba(18,18,26,0.9);
-  color: var(--text-primary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.4rem;
-  transition: all 0.25s;
-  z-index: 10;
-  backdrop-filter: blur(10px);
-}
-.viewer-nav-btn:hover { background: var(--accent-1); border-color: var(--accent-1); }
-.viewer-nav-btn.prev { left: 24px; }
-.viewer-nav-btn.next { right: 24px; }
-
-.viewer-footer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  padding: 16px 24px;
-  background: rgba(18,18,26,0.9);
-  border-top: 1px solid var(--border);
-  flex-shrink: 0;
-}
-.viewer-progress {
-  flex: 1;
-  max-width: 500px;
-  height: 4px;
-  background: var(--surface);
-  border-radius: 2px;
-  overflow: hidden;
-}
-.viewer-progress-bar {
-  height: 100%;
-  background: var(--gradient-1);
-  border-radius: 2px;
-  transition: width 0.35s ease;
-}
-.viewer-counter {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  min-width: 70px;
-  text-align: center;
-}
-
-/* ═══════════ THUMBNAIL STRIP ═══════════ */
-.viewer-thumbstrip {
-  display: flex;
-  gap: 8px;
-  padding: 12px 24px;
-  background: rgba(12,12,18,0.95);
-  border-top: 1px solid var(--border);
-  overflow-x: auto;
-  flex-shrink: 0;
-}
-.viewer-thumbstrip::-webkit-scrollbar { height: 4px; }
-.viewer-thumbstrip::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-.thumb-item {
-  width: 64px; height: 44px;
-  border-radius: 6px;
-  overflow: hidden;
-  cursor: pointer;
-  border: 2px solid transparent;
-  flex-shrink: 0;
-  transition: all 0.2s;
-  opacity: 0.5;
-}
-.thumb-item:hover { opacity: 0.8; }
-.thumb-item.active { border-color: var(--accent-1); opacity: 1; }
-.thumb-item img { width: 100%; height: 100%; object-fit: cover; }
-
-/* ═══════════ FOOTER ═══════════ */
-.site-footer {
-  padding: 60px 2rem 30px;
-  border-top: 1px solid var(--border);
-  text-align: center;
-}
-.footer-brand {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-.footer-brand .nav-logo-icon {
-  width: 30px; height: 30px;
-  font-size: 14px;
-}
-.footer-brand span {
-  font-weight: 600;
-  font-size: 1rem;
-}
-.site-footer p {
-  color: var(--text-muted);
-  font-size: 0.85rem;
-}
-
-/* ═══════════ MOBILE ═══════════ */
-@media (max-width: 768px) {
-  .nav-links { display: none; }
-  .modules-grid { grid-template-columns: 1fr; }
-  .hero { padding: 100px 1.5rem 60px; }
-  .stats-bar { grid-template-columns: repeat(3, 1fr); }
-  .viewer-nav-btn { width: 40px; height: 40px; font-size: 1.1rem; }
-  .viewer-nav-btn.prev { left: 8px; }
-  .viewer-nav-btn.next { right: 8px; }
-  .section { padding: 60px 1.5rem; }
-}
-
-/* ═══════════ FLOATING GRID PATTERN ═══════════ */
-.grid-pattern {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(108,92,231,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(108,92,231,0.03) 1px, transparent 1px);
-  background-size: 60px 60px;
-  pointer-events: none;
+@media(max-width:768px){
+.nav-links{display:none}.modules-grid{grid-template-columns:1fr}.hero{padding:100px 1.5rem 60px}
+.section{padding:60px 1.5rem}.q-card{padding:20px}.quiz-container{padding:24px 16px 100px}
+.stats-bar{grid-template-columns:repeat(3,1fr)}.quiz-results .score{font-size:2.5rem}
 }
 </style>
 </head>
 <body>
 
-<!-- ═══════════ NAVIGATION ═══════════ -->
-<nav class="nav" id="nav">
-  <div class="nav-inner">
-    <a href="#" class="nav-logo" onclick="showHome()">
-      <div class="nav-logo-icon">A</div>
-      <div class="nav-logo-text">Agile<span>Training</span></div>
-    </a>
-    <div class="nav-links">
-      <a href="#modules" class="active" data-nav="modules">Modules</a>
-      <a href="#" onclick="openModule(0)" data-nav="m1">Module 1</a>
-      <a href="#" onclick="openModule(1)" data-nav="m2">Module 2</a>
-      <a href="#" onclick="openModule(2)" data-nav="m3">Module 3</a>
-    </div>
-  </div>
-  <div class="nav-progress" id="navProgress" style="width: 0%"></div>
-</nav>
+<!-- NAV -->
+<nav class="nav"><div class="nav-inner">
+<div class="nav-logo" onclick="showHome()"><div class="nav-logo-icon">A</div><div class="nav-logo-text">Agile<span>Training</span></div></div>
+<div class="nav-links">
+<a onclick="showHome()" class="active">Accueil</a>
+<a onclick="startQuiz(0)">Module 1</a>
+<a onclick="startQuiz(1)">Module 2</a>
+<a onclick="startQuiz(2)">Module 3</a>
+</div>
+</div></nav>
 
-<!-- ═══════════ HERO ═══════════ -->
-<section class="hero" id="hero">
-  <div class="grid-pattern"></div>
-  <div class="hero-content">
-    <div class="hero-badge">
-      Formation Agile 2026
-    </div>
-    <h1>
-      Maîtrisez l'<span class="gradient-text">Agilité</span><br>
-      en 3 Modules
-    </h1>
-    <p>
-      Découvrez les fondamentaux de l'Agile, de la gestion opérationnelle
-      aux programmes à grande échelle. Une formation complète et visuelle.
-    </p>
-    <div class="hero-cta">
-      <a href="#modules" class="btn btn-primary">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        Commencer la formation
-      </a>
-      <a href="#modules" class="btn btn-secondary">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-        Voir les modules
-      </a>
-    </div>
-    <div class="stats-bar">
-      <div class="stat-item">
-        <div class="stat-number">3</div>
-        <div class="stat-label">Modules</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">72</div>
-        <div class="stat-label">Slides</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">100%</div>
-        <div class="stat-label">Visuel</div>
-      </div>
-    </div>
-  </div>
-</section>
+<!-- HERO -->
+<section class="hero" id="hero"><div class="grid-pattern"></div><div class="hero-content">
+<div class="hero-badge">Formation Agile 2026</div>
+<h1>Maîtrisez l'<span class="gt">Agilité</span><br>en 3 Modules</h1>
+<p>Testez vos connaissances avec des quiz interactifs extraits de la formation IBM SkillsBuild. 72 questions réparties sur 3 modules progressifs.</p>
+<div class="hero-cta">
+<a class="btn btn-p" onclick="startQuiz(0)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>Commencer le Quiz</a>
+<a href="#modules" class="btn btn-s"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Voir les modules</a>
+</div>
+<div class="stats-bar">
+<div class="stat-item"><div class="stat-number">3</div><div class="stat-label">Modules</div></div>
+<div class="stat-item"><div class="stat-number">72</div><div class="stat-label">Questions</div></div>
+<div class="stat-item"><div class="stat-number">100%</div><div class="stat-label">Interactif</div></div>
+</div>
+</div></section>
 
-<!-- ═══════════ MODULES ═══════════ -->
+<!-- MODULES -->
 <section class="section" id="modules">
-  <div class="section-header">
-    <div class="section-label">Programme de formation</div>
-    <h2 class="section-title">Choisissez votre Module</h2>
-  </div>
+<div class="section-header"><div class="section-label">Quiz de formation</div><h2 class="section-title">Choisissez votre Module</h2></div>
+<div class="modules-grid">
+<div class="mc" onclick="startQuiz(0)"><div class="mc-body">
+<div class="mc-num">Module 01</div><h3>A Taste of Agile</h3>
+<p>Introduction aux concepts fondamentaux de l'Agilité. Principes, valeurs, frameworks Shuhari, pratiques Scrum et patterns Agile.</p>
+<div class="mc-meta"><span>📝 28 questions</span><span>⏱ ~25 min</span><span>📖 Débutant</span></div>
+<button class="mc-btn">Lancer le Quiz →</button>
+</div></div>
+<div class="mc" onclick="startQuiz(1)"><div class="mc-body">
+<div class="mc-num">Module 02</div><h3>Agile Operations Fundamentals</h3>
+<p>Opérations Agile, Kanban, pull systems, équipes Core/Governance/Extended, rôles, wall of work, itérations et rétrospectives.</p>
+<div class="mc-meta"><span>📝 29 questions</span><span>⏱ ~30 min</span><span>📖 Intermédiaire</span></div>
+<button class="mc-btn">Lancer le Quiz →</button>
+</div></div>
+<div class="mc" onclick="startQuiz(2)"><div class="mc-body">
+<div class="mc-num">Module 03</div><h3>Agile Program Fundamentals</h3>
+<p>Scalez l'Agilité au niveau programme. Discovery workshops, program funnel, epics, user stories, release plans et definition of done.</p>
+<div class="mc-meta"><span>📝 15 questions</span><span>⏱ ~15 min</span><span>📖 Avancé</span></div>
+<button class="mc-btn">Lancer le Quiz →</button>
+</div></div>
+</div></section>
 
-  <div class="modules-grid">
-    <!-- Module 1 -->
-    <div class="module-card" onclick="openModule(0)">
-      <div class="module-card-thumb">
-        <img src="images/module1/slide_01.png" alt="Module 1 Preview" loading="lazy">
-        <div class="overlay"></div>
-      </div>
-      <div class="module-card-body">
-        <div class="module-number">Module 01</div>
-        <h3>A Taste of Agile</h3>
-        <p>Introduction aux concepts fondamentaux de l'Agilité. Découvrez les principes, valeurs et frameworks qui transforment la gestion de projet.</p>
-        <div class="module-meta">
-          <div class="module-meta-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-            28 slides
-          </div>
-          <div class="module-meta-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            ~45 min
-          </div>
-          <div class="module-meta-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-            Débutant
-          </div>
-        </div>
-        <button class="module-start-btn">Commencer le Module →</button>
-      </div>
-    </div>
-
-    <!-- Module 2 -->
-    <div class="module-card" onclick="openModule(1)">
-      <div class="module-card-thumb">
-        <img src="images/module2/slide_01.png" alt="Module 2 Preview" loading="lazy">
-        <div class="overlay"></div>
-      </div>
-      <div class="module-card-body">
-        <div class="module-number">Module 02</div>
-        <h3>Agile Operations Fundamentals</h3>
-        <p>Plongez dans les opérations Agile au quotidien. Sprints, stand-ups, rétrospectives — tout ce qu'il faut pour opérer en mode Agile.</p>
-        <div class="module-meta">
-          <div class="module-meta-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-            29 slides
-          </div>
-          <div class="module-meta-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            ~50 min
-          </div>
-          <div class="module-meta-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-            Intermédiaire
-          </div>
-        </div>
-        <button class="module-start-btn">Commencer le Module →</button>
-      </div>
-    </div>
-
-    <!-- Module 3 -->
-    <div class="module-card" onclick="openModule(2)">
-      <div class="module-card-thumb">
-        <img src="images/module3/slide_01.jpeg" alt="Module 3 Preview" loading="lazy">
-        <div class="overlay"></div>
-      </div>
-      <div class="module-card-body">
-        <div class="module-number">Module 03</div>
-        <h3>Agile Program Fundamentals</h3>
-        <p>Scalez l'Agilité au niveau programme. Coordination multi-équipes, PI Planning, et gouvernance Agile à l'échelle de l'entreprise.</p>
-        <div class="module-meta">
-          <div class="module-meta-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-            15 slides
-          </div>
-          <div class="module-meta-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            ~30 min
-          </div>
-          <div class="module-meta-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-            Avancé
-          </div>
-        </div>
-        <button class="module-start-btn">Commencer le Module →</button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════ FOOTER ═══════════ -->
+<!-- FOOTER -->
 <footer class="site-footer">
-  <div class="footer-brand">
-    <div class="nav-logo-icon">A</div>
-    <span>AgileTraining Platform</span>
-  </div>
-  <p>Formation Agile — Tous droits réservés © 2026</p>
+<div style="display:flex;align-items:center;justify-content:center;gap:10px"><div class="nav-logo-icon" style="width:30px;height:30px;font-size:14px">A</div><span style="font-weight:600">AgileTraining Platform</span></div>
+<p>Formation Agile — Quiz interactifs © 2026</p>
 </footer>
 
-<!-- ═══════════ VIEWER OVERLAY ═══════════ -->
-<div class="viewer-overlay" id="viewer">
-  <div class="viewer-header">
-    <div class="viewer-title">
-      <h2 id="viewerTitle">Module</h2>
-      <div class="badge" id="viewerBadge">1 / 28</div>
-    </div>
-    <button class="viewer-close" onclick="closeViewer()">✕</button>
-  </div>
-  <div class="viewer-body" id="viewerBody">
-    <button class="viewer-nav-btn prev" onclick="prevSlide()">‹</button>
-    <img id="viewerImg" src="" alt="Slide">
-    <button class="viewer-nav-btn next" onclick="nextSlide()">›</button>
-  </div>
-  <div class="viewer-thumbstrip" id="thumbstrip"></div>
-  <div class="viewer-footer">
-    <div class="viewer-counter" id="viewerCounter">1 / 28</div>
-    <div class="viewer-progress">
-      <div class="viewer-progress-bar" id="viewerProgressBar"></div>
-    </div>
-  </div>
+<!-- QUIZ OVERLAY -->
+<div class="quiz-overlay" id="quizOverlay">
+<div class="quiz-top">
+<div class="quiz-top-left"><h2 id="quizTitle">Module</h2><span class="qbadge" id="quizBadge">0/0</span></div>
+<button class="quiz-close" onclick="closeQuiz()">✕</button>
+</div>
+<div class="quiz-pbar"><div class="quiz-pfill" id="quizProgress"></div></div>
+<div class="quiz-container" id="quizContainer"></div>
 </div>
 
 <script>
-// ═══════════ DATA ═══════════
-const modules = [
-  {
-    title: "A Taste of Agile",
-    count: 28,
-    ext: "png",
-    folder: "images/module1"
-  },
-  {
-    title: "Agile Operations Fundamentals",
-    count: 29,
-    ext: "png",
-    folder: "images/module2"
-  },
-  {
-    title: "Agile Program Fundamentals",
-    count: 15,
-    ext: "jpeg",
-    folder: "images/module3"
-  }
+// ═══════════════════════════════════════════════════════════════
+// ALL 72 QUIZ QUESTIONS — extracted from IBM SkillsBuild images
+// c = context, q = question, o = options, a = correct answer index
+// ═══════════════════════════════════════════════════════════════
+const Q = [
+// ─── MODULE 1: A Taste of Agile (28 questions) ───
+[
+{c:"Jordan and his friends are planning a camping trip. Jordan starts by clearly defining the goal of the trip, which is to have a relaxing and enjoyable experience. Throughout the planning process, Jordan ensures that every decision, from choosing the campsite to organizing activities, aligns with this goal.",q:"Which Agile principle is Jordan applying?",o:["Clarity of outcome","Self-directed teams","Iteration and learning"],a:0},
+{c:"John is preparing a new recipe for a community potluck. After cooking a small batch, he shares it with his friends. They taste it and provide their feedback.",q:"What should be John's next step to ensure the recipe is well-received at the potluck?",o:["Test the recipe with a different group of friends for more feedback.","Serve the dish as it is and make a note for future improvements.","Adjust the recipe based on the feedback.","Document the feedback and plan to try a different recipe."],a:2},
+{q:"What is the first step to act on the iteration and learning principle?",o:["Iterate by making adjustments based on feedback received.","Course correct as necessary to meet user outcomes.","Listen and learn from feedback received.","Start by doing and trying small pieces of work."],a:3},
+{q:"What is the correct sequence of steps to act on the clarity of outcome principle?",o:["Determine the user outcome, define the problem, and keep the user outcome in sight","Define the problem, keep the user outcome in sight, and determine the user outcome","Define the problem, determine the user outcome, and keep the user outcome in sight","Keep the user outcome in sight, define the problem, and determine the user outcome"],a:2},
+{q:"Which of the following principles emphasizes the importance of groups that are empowered to manage their own work?",o:["Clarity of outcome","Self-directed teams","Iteration and learning"],a:1},
+{q:"After gathering everyone for a stand-up meeting, what is the next step?",o:["Assign new tasks to team members.","Have team members give their status updates.","Review and adjust the project's timeline.","Note any meetings that need to be scheduled."],a:1},
+{q:"In which Shuhari stage do you move away from traditional methods, develop a new approach, and teach it to others?",o:["Shu","Ha","Ri"],a:2},
+{q:"Which Agile practice allows a team to review their performance and reflect on ways to improve?",o:["Mood marbles","Stand-up","Retrospective","Social contract"],a:2},
+{q:"When creating a social contract, which step involves writing down ideas on sticky notes and sticking them anywhere on the wall?",o:["Brainstorm individually","Discuss and share","Finalize the contract","Group similar ideas"],a:0},
+{c:"During a team meeting, Maxim introduces mood marbles and asks each team member to select a marble that represents their current emotional state and drop it into a jar.",q:"What is Maxim's purpose of using mood marbles in this scenario?",o:["To track project milestones and deadlines","To evaluate how the team is feeling","To organize tasks and assign responsibilities","To identify key issues in the project"],a:1},
+{q:"Which Agile pattern helps business leaders develop the company's direction?",o:["Agile strategy and governance pattern","Agile program pattern","Agile operations pattern"],a:0},
+{q:"Which Agile pattern is suitable for managing project work with a defined start and end?",o:["Agile strategy and governance pattern","Agile operations pattern","Agile program pattern"],a:2},
+{c:"After the team understands the problems, challenges, and desired outcomes, what is the next step in the Agile pattern?",q:"What is the next step?",o:["Implement the changes","Explore the required changes and strategies","Build and test","Mobilize the team"],a:1},
+{c:"Winny manages the payroll system for a company and needs to handle the monthly process of distributing salaries to employees.",q:"Which Agile pattern should Winny use to effectively manage this repeatable process?",o:["Agile program pattern","Agile strategy and governance pattern","Agile operations pattern"],a:2},
+{q:"What is the first step in Agile patterns, regardless of the specific pattern being used?",o:["Build, test, and implement","Explore and strategize","Understand","Mobilize"],a:3},
+{c:"Your boss puts together a new team to work on a task. The team meets to start thinking about how they will work together. They decide to each write ideas on sticky notes and place them on the wall. Once everyone is done, the team groups similar ideas together and writes a descriptive statement for each group. They then rewrite each descriptive statement to complete the sentence: \"I expect that ...\"",q:"What Agile practice is the team using?",o:["Mood marbles","Showcase","Retrospective","Social contract"],a:3},
+{c:"Some students in your school have been posting photos on social media, causing issues at the school. The principal, a few teachers, and a group of students sit down to figure out the core of the problem and the outcome they would like to see implemented. Once that is set, the principal and teachers leave, allowing the group of students to figure out the details.",q:"Which Agile principle is described in this scenario?",o:["Self-directed teams","Clarity of outcome","Iteration and learning"],a:0},
+{c:"You are working on a project for your boss and have just finished a significant part of it. You're excited to share it with your boss and get their feedback.",q:"What Agile practice will you be participating in?",o:["Shuhari","Showcase","Retrospective","Social contract"],a:1},
+{q:"Which of the following statements is false?",o:["Agile can be used for all projects.","Agile can be done remotely.","Agile is very disciplined.","Agile is limited to software work."],a:3},
+{c:"Jason listens to others' viewpoints, suggestions, and ideas without judgment or dismissiveness.",q:"Which Agile value is Jason demonstrating?",o:["Trust","Respect","Openness","Courage"],a:2},
+{c:"You're in a stand-up. Your team member has been talking for a while. He's starting to go into the technical details of the problem blocking his work. He asks for your opinion.",q:"What should you do?",o:["Suggest scheduling another meeting to discuss the issue in more depth.","Defer the question to your manager or team lead.","Discuss some solutions with the team. It's a great opportunity to get feedback.","Tell him you don't know and suggest contacting an expert."],a:0},
+{q:"Complete the sentence: Agile principles guide ___________ you do your work.",o:["how","when","who","why"],a:0},
+{c:"During a stand-up, two of the questions you should answer are: What have you completed since the last stand-up? What will you be working on before the next stand-up?",q:"What is the third question?",o:["What are your ideas to solve your teammate's blockers?","What are your proposals for some initiatives for the team to try out?","What feedback have you received from stakeholders?","What are your blockers?"],a:3},
+{c:"Lily is the head of a non-profit organization that aims to expand its reach and impact over the next five years. She wants to develop a clear direction for the organization to achieve this.",q:"Which Agile pattern should Lily use in this scenario?",o:["Agile operations pattern","Agile strategy and governance pattern","Agile program pattern"],a:1},
+{q:"As an Agile practitioner, what is the central question you should always ask yourself?",o:["How can I work faster?","Am I breaking the social contract?","How can I get better today?","What is puzzling me?"],a:2},
+{c:"Sally is working on a science project with four friends. They decide to build a volcano that spills out lava. Each member has a different solution for the lava. One by one, they try the solutions to see what works best. Each time they improve the solution until they get the best outcome.",q:"What Agile principle is the group applying?",o:["Self-directed teams","Clarity of outcome","Iteration and learning"],a:2},
+{c:"Your team has just defined the problem they are trying to solve.",q:"What is the next step to ensure clarity of outcome?",o:["Determine the user outcome.","Identify risks and dependencies.","Collect feedback from stakeholders.","Keep the user outcome in sight."],a:0},
+{c:"Paleo is a great team member who always admits to his mistakes and is willing to ask others for help.",q:"Which Agile value is Paleo demonstrating?",o:["Trust","Courage","Openness","Respect"],a:0}
+],
+// ─── MODULE 2: Agile Operations Fundamentals (29 questions) ───
+[
+{q:"Which of the following is an example of operations work?",o:["Planning a project timeline","Resolving customer support tickets","Developing a new product feature","Conducting market research"],a:1},
+{c:"After evaluating the urgency of several help desk tickets, Mark decides which ones should be addressed first based on their importance.",q:"Which phase of the operations pattern is Mark engaged in?",o:["Prioritization","Delivery","Request","Operations funnel"],a:0},
+{q:"Which of the following teams provides strategic direction for the entire team?",o:["Extended team","Agile team","Governance team","Core team"],a:2},
+{c:"On a core team, who is responsible for holding the vision of the outcome and prioritizing the work?",q:"Who holds this responsibility?",o:["Product owner","Scrum master","Subject matter expert","Iteration manager"],a:0},
+{c:"Robert is in a group that meets to make big decisions about a project. They check the project plan, keep track of progress, and decide if the project is still a good idea.",q:"What is Robert's role?",o:["Sponsor","Steering committee member","Stakeholder","Product owner"],a:1},
+{c:"Puran helps the team by removing obstacles, making sure they can choose their own tasks, and encouraging them to work better together.",q:"What is Puran's role?",o:["Stakeholder","Product owner","Iteration manager","Subject matter expert"],a:2},
+{q:"Which of the following teams is responsible for providing additional support and resources as needed?",o:["Governance team","Agile team","Core team","Extended team"],a:3},
+{q:"Which of the following teams provides strategic direction for the entire team?",o:["Extended team","Agile team","Governance team","Core team"],a:2},
+{q:"Which of the following statements is false about the pull system for workflow processing?",o:["Managers pull the work for the team.","Lead times become more predictable.","Overburdening is eliminated.","WIP limits manage the workflow."],a:0},
+{q:"Which of the following statements is false about the pull system for workflow processing?",o:["Managers pull the work for the team.","Lead times become more predictable.","Overburdening is eliminated.","WIP limits manage the workflow."],a:0},
+{c:"Gian is leading a team and makes sure that all the rules and guidelines for the project are clearly written down and displayed where everyone can see them.",q:"Which principle of the Kanban method is Gian applying?",o:["Visualize the work","Improve collaboratively","Manage flow","Make process policies explicit"],a:3},
+{c:"Leslie ensures that her team members only start new tasks once they have completed their current ones, rather than continuously receiving new tasks.",q:"Which principle of the Kanban method is Leslie applying?",o:["Visualize the work","Limit WIP","Improve collaboratively","Manage flow"],a:1},
+{q:"Which of the following principles emphasizes controlling the number of ongoing tasks?",o:["Limit WIP","Visualize the work","Make process policies explicit","Manage flow"],a:0},
+{q:"Which of the following principles emphasizes making small, gradual adjustments over time to refine processes?",o:["Improve collaboratively","Visualize the work","Make process policies explicit","Manage flow"],a:0},
+{q:"Which of the following statements is true about stand-ups in operations work?",o:["Stand-ups must be conducted every day.","Stand-ups are run by the manager.","Stand-ups are typically done once a month.","Stand-ups are not needed in operations work."],a:0},
+{c:"Think about the operations pattern. Your teacher gives you a group assignment. You meet with the team to figure out what tasks need to be completed.",q:"What should you do next?",o:["Start working on all tasks at once to finish faster.","Start working on the easiest tasks first.","Prioritize the tasks to focus on the most important ones first.","Complete the longest tasks first to get them out of the way."],a:2},
+{c:"Your team has just completed gathering all the incoming requests for system improvements.",q:"What is the next step to ensure these requests are handled appropriately?",o:["Communicate the requests to the development team.","Review the requests with stakeholders.","Implement the improvements immediately.","Prioritize the requests based on urgency and impact."],a:3},
+{q:"Fill in the blanks: ___________ work refers to managing ongoing, routine tasks necessary for daily functioning, while ___________ work involves coordinating specific projects to achieve strategic goals.",o:["Operations, Agile","Program, operations","Agile, program","Operations, program"],a:3},
+{q:"Which of the following is an example of operations work?",o:["Developing a new marketing strategy for a product launch","Conducting daily system health checks","Setting up a new project management tool","Redesigning a product interface"],a:1},
+{q:"Which of the following is a key characteristic of operations work?",o:["Starts with initiation and ends with completion when the objectives are met","Includes planning and executing initiatives with set milestones","Involves managing multiple projects with a defined start and end date","Focuses on ongoing, routine tasks necessary for daily functioning"],a:3},
+{c:"Your mother noticed that it is taking longer than expected to get some of the chores done during the week. As a family, you sit down to talk about ways you can get things done more quickly, while still doing a good job. The family decides to hire a helper to come in once a week to help with the big chores.",q:"What did your family take part in?",o:["Operations funnel","Continuous improvement","Bottleneck work","Social contract"],a:1},
+{q:"Which of the following statements is true about bottlenecks in the operations pattern?",o:["Bottlenecks have no impact on the delivery speed of the process.","Teams and leaders can decide where the bottleneck occurs to improve efficiency.","Once a bottleneck is resolved, no new bottlenecks will appear.","Bottlenecks can be removed from the process."],a:1},
+{q:"Which of the following teams has members who do the bulk of the work?",o:["Core team","Governance team","Extended team","Agile team"],a:0},
+{c:"On a core team, who has more experience and can assist the other team members with the content?",q:"Who is this person?",o:["Iteration manager","Change manager","Stakeholder","Subject matter expert"],a:3},
+{q:"What is the correct sequence of phases to implement the operations pattern?",o:["Request, prioritization, operations funnel, and delivery","Prioritization, delivery, operations funnel, and request","Operations funnel, request, prioritization, and delivery","Request, operations funnel, prioritization, and delivery"],a:0},
+{q:"Which of the following is true about a wall of work?",o:["Each work card on the wall of work should have a minimum of three tasks noted on it.","A wall of work is updated every month.","A wall of work is managed by the team's manager.","A wall of work, at a minimum, has three columns: to do, in progress, and done."],a:3},
+{c:"The team you're on is struggling to get things done. The team gets together and decides to create a schedule for the next two weeks. They start by planning and figuring out what work each team member can commit to completing over the next two weeks.",q:"Which Agile practice did the team incorporate?",o:["Retrospective","Social contract","Wall of work","Iterations"],a:3},
+{q:"Which of the following is a question asked by the team to complete a retrospective?",o:["Did everyone contribute equally?","What went well?","Who made the mistake?","Did we meet deadlines?"],a:1},
+{q:"In Agile teams, what does it mean to be \"cross-functional\"?",o:["Team members focus on one type of task or skill.","Team members come from various departments and have a variety of skills.","Team members rotate through different roles every week.","Team members are all from the same department and have similar skills."],a:1}
+],
+// ─── MODULE 3: Agile Program Fundamentals (15 questions) ───
+[
+{c:"During one of the team's iteration releases, the team received some user feedback. If they move forward with this feedback, it means the team will have to add a new requirement to a feature they are creating for the client.",q:"What should the team do?",o:["Come up with an alternative, quick solution so they don't have to add the new requirement.","Decide how to work the new requirements into future iterations.","Change the work they're doing now to incorporate the new requirement.","Decide how to let the client know they can't add the requirement into the product."],a:1},
+{c:"Your boss gives you a new project. Brian, a team member, is ready to jump into the work. You explain to Brian how important it is to get everything set up before the team actually starts the project work.",q:"Which of the following is unnecessary for the team to do before the first iteration begins?",o:["Have a shared understanding of Agile and how the team will work.","Identify epics, features, and user stories.","Set project goals and make sure the team has a clear understanding of the goals.","Have a showcase meeting."],a:3},
+{q:"What is the smallest unit of work in the Agile framework?",o:["User stories","Features","Epics","Backlog"],a:0},
+{q:"Which of the following phases starts the program pattern?",o:["Delivery","Discovery","Program funnel","Event"],a:3},
+{q:"Which of the following is outside the scope of the discovery phase?",o:["The approved proposal is in place.","The team defines the problem to be solved.","The release plan is complete.","The team makes better decisions on how the work will get done."],a:2},
+{c:"In which phase does a small team spend a few days to understand the problem to be solved, explore options and strategies for solving it, make sure the right people will be in place to complete the work, and determine whether or not to move forward with the work?",q:"Which phase is this?",o:["Delivery","Program funnel","Discovery","Event"],a:2},
+{c:"Your boss assigns you to a project with three other core members. He hands over an approved proposal to the core team.",q:"What phase do you move to now?",o:["Program funnel","Delivery","Discovery","Event"],a:0},
+{c:"At work, your manager asks your team to create a project map that outlines when different parts of your project will be completed and made available.",q:"What do you call this Agile practice?",o:["Release plan","Wall of work","User story","Social contract"],a:0},
+{c:"You are on a project that requires your team to create an app that will help students with multiplication problems. Your team is pulling items from the backlog to work on for the next iteration.",q:"What Agile practice is your team using to map progress for the iteration?",o:["Retrospective","Wall of work","User story","Social contract"],a:1},
+{c:"You work at a car dealership. Juan calls and tells you he wants to buy a car for his daughter — a safe four-wheel-drive SUV with dark leather interior. After your research, he comes in to pick up the car. You have the car washed, waxed, and filled with gas, and all the paperwork is completed.",q:"Which items are considered the dealership's \"definition of done\"?",o:["The paperwork with all the finance details","A safe four-wheel-drive SUV with dark leather interior","The research you did to find the exact car for Juan","Car washed, waxed, and filled with gas, and all the paperwork completed"],a:3},
+{c:"Your team members just finished their first iteration.",q:"What should they do next?",o:["Start the next iteration.","Start the process over with a discovery workshop.","Move on to the next project.","Choose a new event to start working on."],a:0},
+{c:"Your team is holding a discovery workshop.",q:"Which of the following questions is outside the scope of this workshop?",o:["What is the problem we're trying to solve?","What is the solution?","What is the cost?","What are the blockers?"],a:2},
+{q:"Which one of the following is applied to all stories?",o:["Acceptance criteria","Definition of done","Definition criteria","Acceptance list"],a:1},
+{q:"Which of the following describes the high-level activities that span multiple iterations and possibly releases?",o:["Features","User stories","Contracts","Epics"],a:3},
+{c:"You're starting a new project and the team is anxious to get to work; however, you know key things need to be done before team members can start working on their first iteration.",q:"Which of the following is unnecessary for the team to complete before the first iteration begins?",o:["Create a social contract.","Set project standards and guidelines.","Set release goals.","Have a retrospective meeting."],a:3}
+]
 ];
 
-let currentModule = 0;
-let currentSlide = 0;
+let curMod = -1, ans = [];
 
-// ═══════════ NAV SCROLL ═══════════
-window.addEventListener('scroll', () => {
-  const nav = document.getElementById('nav');
-  nav.classList.toggle('scrolled', window.scrollY > 50);
+function showHome(){document.getElementById('quizOverlay').classList.remove('active');document.body.style.overflow='';window.scrollTo({top:0,behavior:'smooth'})}
+function closeQuiz(){document.getElementById('quizOverlay').classList.remove('active');document.body.style.overflow=''}
 
-  // Progress
-  const scrollable = document.documentElement.scrollHeight - window.innerHeight;
-  const progress = scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0;
-  document.getElementById('navProgress').style.width = progress + '%';
-});
-
-// ═══════════ VIEWER ═══════════
-function getSlideUrl(moduleIdx, slideIdx) {
-  const m = modules[moduleIdx];
-  const num = String(slideIdx + 1).padStart(2, '0');
-  return `${m.folder}/slide_${num}.${m.ext}`;
+function startQuiz(idx){
+  curMod=idx;
+  ans=new Array(Q[idx].length).fill(-1);
+  const t=["A Taste of Agile","Agile Operations Fundamentals","Agile Program Fundamentals"];
+  document.getElementById('quizTitle').textContent=t[idx];
+  document.getElementById('quizBadge').textContent=`0/${Q[idx].length}`;
+  renderQuiz();
+  document.getElementById('quizOverlay').classList.add('active');
+  document.body.style.overflow='hidden';
+  document.getElementById('quizOverlay').scrollTop=0;
 }
 
-function openModule(idx) {
-  currentModule = idx;
-  currentSlide = 0;
-  const m = modules[idx];
-  const viewer = document.getElementById('viewer');
-
-  document.getElementById('viewerTitle').textContent = m.title;
-  updateSlide();
-  buildThumbs();
-
-  viewer.classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeViewer() {
-  document.getElementById('viewer').classList.remove('active');
-  document.body.style.overflow = '';
-}
-
-function updateSlide() {
-  const m = modules[currentModule];
-  const img = document.getElementById('viewerImg');
-
-  // Animate transition
-  img.style.opacity = '0';
-  img.style.transform = 'scale(0.97)';
-
-  setTimeout(() => {
-    img.src = getSlideUrl(currentModule, currentSlide);
-    img.style.opacity = '1';
-    img.style.transform = 'scale(1)';
-  }, 150);
-
-  const label = `${currentSlide + 1} / ${m.count}`;
-  document.getElementById('viewerBadge').textContent = label;
-  document.getElementById('viewerCounter').textContent = label;
-  document.getElementById('viewerProgressBar').style.width =
-    ((currentSlide + 1) / m.count * 100) + '%';
-
-  // Update thumb active
-  document.querySelectorAll('.thumb-item').forEach((t, i) => {
-    t.classList.toggle('active', i === currentSlide);
+function renderQuiz(){
+  const qs=Q[curMod],c=document.getElementById('quizContainer');
+  let h='';
+  qs.forEach((q,i)=>{
+    h+=`<div class="q-card" id="qc${i}"><div class="q-header"><span class="q-number">Q${i+1}/${qs.length}</span><span class="q-status" id="qs${i}"></span></div>`;
+    if(q.c)h+=`<div class="q-context">${q.c}</div>`;
+    h+=`<p class="q-text">${q.q}</p><div class="q-options">`;
+    q.o.forEach((o,j)=>{h+=`<div class="q-opt" id="qo${i}-${j}" onclick="pick(${i},${j})"><span class="dot">✓</span><span>${o}</span></div>`});
+    h+=`</div></div>`;
   });
-
-  // Scroll active thumb into view
-  const activeThumb = document.querySelector('.thumb-item.active');
-  if (activeThumb) activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  h+=`<div id="resArea"></div>`;
+  c.innerHTML=h;
+  updProg();
 }
 
-function buildThumbs() {
-  const strip = document.getElementById('thumbstrip');
-  const m = modules[currentModule];
-  strip.innerHTML = '';
-  for (let i = 0; i < m.count; i++) {
-    const div = document.createElement('div');
-    div.className = 'thumb-item' + (i === 0 ? ' active' : '');
-    div.innerHTML = `<img src="${getSlideUrl(currentModule, i)}" alt="Slide ${i+1}" loading="lazy">`;
-    div.onclick = () => { currentSlide = i; updateSlide(); };
-    strip.appendChild(div);
-  }
+function pick(qi,oi){
+  if(ans[qi]!==-1)return;
+  ans[qi]=oi;
+  const q=Q[curMod][qi],cor=q.a;
+  q.o.forEach((_,i)=>document.getElementById(`qo${qi}-${i}`).classList.add('disabled'));
+  document.getElementById(`qo${qi}-${cor}`).classList.add('is-correct');
+  const card=document.getElementById(`qc${qi}`),st=document.getElementById(`qs${qi}`);
+  if(oi===cor){card.classList.add('answered-correct');st.textContent='✓ Correct';st.className='q-status correct'}
+  else{card.classList.add('answered-wrong');document.getElementById(`qo${qi}-${oi}`).classList.add('is-wrong');st.textContent='✗ Incorrect';st.className='q-status wrong'}
+  updProg();chkDone();
 }
 
-function nextSlide() {
-  const m = modules[currentModule];
-  currentSlide = (currentSlide + 1) % m.count;
-  updateSlide();
+function updProg(){
+  const t=Q[curMod].length,d=ans.filter(a=>a!==-1).length;
+  document.getElementById('quizProgress').style.width=(d/t*100)+'%';
+  document.getElementById('quizBadge').textContent=`${d}/${t}`;
 }
 
-function prevSlide() {
-  const m = modules[currentModule];
-  currentSlide = (currentSlide - 1 + m.count) % m.count;
-  updateSlide();
+function chkDone(){
+  const t=Q[curMod].length,d=ans.filter(a=>a!==-1).length;
+  if(d<t)return;
+  const cor=ans.filter((a,i)=>a===Q[curMod][i].a).length,pct=Math.round(cor/t*100);
+  const cls=pct>=80?'great':pct>=50?'ok':'bad';
+  const msg=pct>=80?'Excellent travail ! 🎉':pct>=50?'Pas mal, continuez ! 💪':'Révisez et réessayez ! 📖';
+  document.getElementById('resArea').innerHTML=`<div class="quiz-results"><h2>Quiz terminé !</h2><div class="score ${cls}">${cor}/${t}</div><p>${pct}% — ${msg}</p><button class="btn btn-p" onclick="startQuiz(${curMod})" style="margin:8px">🔄 Recommencer</button><button class="btn btn-s" onclick="closeQuiz()" style="margin:8px">← Retour</button></div>`;
+  setTimeout(()=>document.getElementById('resArea').scrollIntoView({behavior:'smooth'}),300);
 }
 
-// Keyboard
-document.addEventListener('keydown', e => {
-  if (!document.getElementById('viewer').classList.contains('active')) return;
-  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
-  if (e.key === 'ArrowLeft') prevSlide();
-  if (e.key === 'Escape') closeViewer();
-});
-
-// Touch swipe
-let touchStartX = 0;
-document.getElementById('viewerBody').addEventListener('touchstart', e => {
-  touchStartX = e.touches[0].clientX;
-});
-document.getElementById('viewerBody').addEventListener('touchend', e => {
-  const diff = touchStartX - e.changedTouches[0].clientX;
-  if (Math.abs(diff) > 50) {
-    diff > 0 ? nextSlide() : prevSlide();
-  }
-});
-
-function showHome() {
-  closeViewer();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// Smooth image transition
-const viewerImg = document.getElementById('viewerImg');
-viewerImg.style.transition = 'opacity 0.2s, transform 0.25s';
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeQuiz()});
 </script>
-
 </body>
 </html>
