@@ -120,6 +120,12 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .section{padding:60px 1.5rem}.q-card{padding:20px}.quiz-container{padding:24px 16px 100px}
 .stats-bar{grid-template-columns:repeat(3,1fr)}.quiz-results .score{font-size:2.5rem}
 }
+.mc-exam::before{background:linear-gradient(135deg,#fdcb6e,#e17055)!important}
+.mc-exam:hover{box-shadow:0 8px 32px rgba(0,0,0,.4),0 0 40px rgba(253,203,110,.2)!important}
+.q-origin{font-family:'Space Mono',monospace;font-size:.65rem;padding:3px 8px;border-radius:4px;letter-spacing:.5px;font-weight:600}
+.q-origin.m1{background:rgba(108,92,231,.12);color:var(--a1g)}
+.q-origin.m2{background:rgba(0,206,201,.12);color:var(--a2)}
+.q-origin.m3{background:rgba(253,121,168,.12);color:var(--a3)}
 </style>
 </head>
 <body>
@@ -132,6 +138,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <a onclick="startQuiz(0)">Module 1</a>
 <a onclick="startQuiz(1)">Module 2</a>
 <a onclick="startQuiz(2)">Module 3</a>
+<a onclick="startExam()" style="color:var(--a2)">🎯 Examen</a>
 </div>
 </div></nav>
 
@@ -147,7 +154,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <div class="stats-bar">
 <div class="stat-item"><div class="stat-number">3</div><div class="stat-label">Modules</div></div>
 <div class="stat-item"><div class="stat-number">72</div><div class="stat-label">Questions</div></div>
-<div class="stat-item"><div class="stat-number">100%</div><div class="stat-label">Interactif</div></div>
+<div class="stat-item"><div class="stat-number">4</div><div class="stat-label">Modes</div></div>
 </div>
 </div></section>
 
@@ -172,6 +179,13 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <p>Scalez l'Agilité au niveau programme. Discovery workshops, program funnel, epics, user stories, release plans et definition of done.</p>
 <div class="mc-meta"><span>📝 15 questions</span><span>⏱ ~15 min</span><span>📖 Avancé</span></div>
 <button class="mc-btn">Lancer le Quiz →</button>
+</div></div>
+<!-- EXAM MODE -->
+<div class="mc mc-exam" onclick="startExam()"><div class="mc-body">
+<div class="mc-num" style="color:#fdcb6e">🎯 MODE EXAMEN</div><h3>Test de Compétences</h3>
+<p>20 questions aléatoires piochées dans les 3 modules. Un mélange différent à chaque tentative pour tester vos connaissances en conditions d'examen.</p>
+<div class="mc-meta"><span>🎲 20 questions aléatoires</span><span>🔀 Mix 3 modules</span><span>🏆 Mode examen</span></div>
+<button class="mc-btn" style="background:linear-gradient(135deg,#fdcb6e,#e17055);color:#0a0a0f">Lancer l'Examen →</button>
 </div></div>
 </div></section>
 
@@ -280,12 +294,39 @@ const Q = [
 ]
 ];
 
-let curMod = -1, ans = [];
+let curMod = -1, ans = [], examQs = [], isExam = false;
 
 function showHome(){document.getElementById('quizOverlay').classList.remove('active');document.body.style.overflow='';window.scrollTo({top:0,behavior:'smooth'})}
 function closeQuiz(){document.getElementById('quizOverlay').classList.remove('active');document.body.style.overflow=''}
 
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function startExam(){
+  isExam=true;
+  // Pool all questions with module origin tag
+  const pool=[];
+  const mNames=["Module 1","Module 2","Module 3"];
+  Q.forEach((mod,mi)=>mod.forEach((q,qi)=>pool.push({...q,mod:mi,origIdx:qi})));
+  // Shuffle and pick 20
+  const picked=shuffle(pool).slice(0,20);
+  // For each picked question, also shuffle the options
+  examQs=picked.map(q=>{
+    const indices=q.o.map((_,i)=>i);
+    const shuffled=shuffle(indices);
+    return{...q,o:shuffled.map(i=>q.o[i]),a:shuffled.indexOf(q.a)};
+  });
+  curMod=-1;
+  ans=new Array(20).fill(-1);
+  document.getElementById('quizTitle').textContent='🎯 Mode Examen';
+  document.getElementById('quizBadge').textContent='0/20';
+  renderExam();
+  document.getElementById('quizOverlay').classList.add('active');
+  document.body.style.overflow='hidden';
+  document.getElementById('quizOverlay').scrollTop=0;
+}
+
 function startQuiz(idx){
+  isExam=false;examQs=[];
   curMod=idx;
   ans=new Array(Q[idx].length).fill(-1);
   const t=["A Taste of Agile","Agile Operations Fundamentals","Agile Program Fundamentals"];
@@ -295,6 +336,22 @@ function startQuiz(idx){
   document.getElementById('quizOverlay').classList.add('active');
   document.body.style.overflow='hidden';
   document.getElementById('quizOverlay').scrollTop=0;
+}
+
+function renderExam(){
+  const c=document.getElementById('quizContainer');
+  const mTags=["M1","M2","M3"],mCls=["m1","m2","m3"];
+  let h='';
+  examQs.forEach((q,i)=>{
+    h+=`<div class="q-card" id="qc${i}"><div class="q-header"><span class="q-number">Q${i+1}/20</span><span class="q-origin ${mCls[q.mod]}">${mTags[q.mod]}</span><span class="q-status" id="qs${i}"></span></div>`;
+    if(q.c)h+=`<div class="q-context">${q.c}</div>`;
+    h+=`<p class="q-text">${q.q}</p><div class="q-options">`;
+    q.o.forEach((o,j)=>{h+=`<div class="q-opt" id="qo${i}-${j}" onclick="pick(${i},${j})"><span class="dot">✓</span><span>${o}</span></div>`});
+    h+=`</div></div>`;
+  });
+  h+=`<div id="resArea"></div>`;
+  c.innerHTML=h;
+  updProg();
 }
 
 function renderQuiz(){
@@ -315,7 +372,7 @@ function renderQuiz(){
 function pick(qi,oi){
   if(ans[qi]!==-1)return;
   ans[qi]=oi;
-  const q=Q[curMod][qi],cor=q.a;
+  const q=isExam?examQs[qi]:Q[curMod][qi],cor=q.a;
   q.o.forEach((_,i)=>document.getElementById(`qo${qi}-${i}`).classList.add('disabled'));
   document.getElementById(`qo${qi}-${cor}`).classList.add('is-correct');
   const card=document.getElementById(`qc${qi}`),st=document.getElementById(`qs${qi}`);
@@ -325,18 +382,35 @@ function pick(qi,oi){
 }
 
 function updProg(){
-  const t=Q[curMod].length,d=ans.filter(a=>a!==-1).length;
+  const t=isExam?20:Q[curMod].length,d=ans.filter(a=>a!==-1).length;
   document.getElementById('quizProgress').style.width=(d/t*100)+'%';
   document.getElementById('quizBadge').textContent=`${d}/${t}`;
 }
 
 function chkDone(){
-  const t=Q[curMod].length,d=ans.filter(a=>a!==-1).length;
+  const t=isExam?20:Q[curMod].length,d=ans.filter(a=>a!==-1).length;
   if(d<t)return;
-  const cor=ans.filter((a,i)=>a===Q[curMod][i].a).length,pct=Math.round(cor/t*100);
+  const qs=isExam?examQs:Q[curMod];
+  const cor=ans.filter((a,i)=>a===qs[i].a).length,pct=Math.round(cor/t*100);
   const cls=pct>=80?'great':pct>=50?'ok':'bad';
   const msg=pct>=80?'Excellent travail ! 🎉':pct>=50?'Pas mal, continuez ! 💪':'Révisez et réessayez ! 📖';
-  document.getElementById('resArea').innerHTML=`<div class="quiz-results"><h2>Quiz terminé !</h2><div class="score ${cls}">${cor}/${t}</div><p>${pct}% — ${msg}</p><button class="btn btn-p" onclick="startQuiz(${curMod})" style="margin:8px">🔄 Recommencer</button><button class="btn btn-s" onclick="closeQuiz()" style="margin:8px">← Retour</button></div>`;
+  const retryBtn=isExam
+    ?`<button class="btn btn-p" onclick="startExam()" style="margin:8px">🔄 Nouvel examen</button>`
+    :`<button class="btn btn-p" onclick="startQuiz(${curMod})" style="margin:8px">🔄 Recommencer</button>`;
+  // Breakdown per module for exam
+  let breakdown='';
+  if(isExam){
+    const mNames=["Module 1","Module 2","Module 3"];
+    const mColors=["var(--a1g)","var(--a2)","var(--a3)"];
+    breakdown='<div style="display:flex;gap:16px;justify-content:center;margin:16px 0;flex-wrap:wrap">';
+    for(let m=0;m<3;m++){
+      const mQs=examQs.map((q,i)=>({q,i})).filter(x=>x.q.mod===m);
+      const mCorrect=mQs.filter(x=>ans[x.i]===x.q.a).length;
+      breakdown+=`<div style="background:var(--sf);padding:12px 20px;border-radius:10px;text-align:center"><div style="font-family:'Space Mono',monospace;font-size:1.1rem;font-weight:700;color:${mColors[m]}">${mCorrect}/${mQs.length}</div><div style="font-size:.75rem;color:var(--t3);margin-top:2px">${mNames[m]}</div></div>`;
+    }
+    breakdown+='</div>';
+  }
+  document.getElementById('resArea').innerHTML=`<div class="quiz-results"><h2>${isExam?'Examen terminé !':'Quiz terminé !'}</h2><div class="score ${cls}">${cor}/${t}</div>${breakdown}<p>${pct}% — ${msg}</p>${retryBtn}<button class="btn btn-s" onclick="closeQuiz()" style="margin:8px">← Retour</button></div>`;
   setTimeout(()=>document.getElementById('resArea').scrollIntoView({behavior:'smooth'}),300);
 }
 
